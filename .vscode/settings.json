@@ -1,0 +1,8 @@
+{
+  "editor.colorDecorators": true,
+  "[css]": { "editor.colorDecorators": true },
+  "[scss]": { "editor.colorDecorators": true },
+  "[postcss]": { "editor.colorDecorators": true },
+
+  "css.lint.unknownAtRules": "ignore"
+}

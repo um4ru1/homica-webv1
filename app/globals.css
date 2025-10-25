@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --color-custom-button-text: oklch(100% 0.00011 271.152); 
+}
+
+/* Light theme defaults */
+/* :root {
+  --background: oklch(100% 0 0);
+  --foreground: oklch(20% 0 0);
+  --primary: oklch(50% 0.2 250);
+  --secondary: oklch(70% 0.1 280);
+} */
+
+@layer utilities {
+  .dark .dark\:text-blue-400 {
+    color: oklch(71.375% 0.14347 254.643);
+  }
+  .dark .dark\:text-green-400 {
+    color: oklch(80.036% 0.18204 151.736);
+  }
+  .dark .dark\:text-red-400 {
+    color: oklch(71.061% 0.16614 22.191);
+  }
+  .dark .dark\:text-purple-400 {
+    color: oklch(72.168% 0.17679 305.493);
+  }
+  .dark .dark\:text-yellow-400 {
+    color: oklch(86.055% 0.17305 91.942);
+  }
+}
+
+/* Dark theme overrides */
+.dark {
+  --background: oklch(12.442% 0.04154 255.394); /* background bisa diganti bebas namanya */
+  --foreground: oklch(92.997% 0.0105 261.889);
+  --background-secondary: oklch(21.834% 0.09066 260.333);
+  --foreground-secondary: oklch(84.775% 0.00903 264.594);
+  /* --foreground-secondary: oklch(100% 0.00011 271.152); */
+}
+
+/* Map CSS variables to Tailwind utilities */
+@theme inline {
+  --color-custombg: var(--background);
+  --color-customtext: var(--foreground);
+  --color-customtext2: var(--foreground-secondary);
+  --color-custombg2: var(--background-secondary);
+  --color-custombutton: var(--color-custom-button-text);
+}
+
+/* @layer base {
+  body { @apply bg-custombg text-customtext; }
+} */
+
+/* Optional if you want dark variant to match any `.dark` ancestor */
+@custom-variant dark (&:where(.dark, .dark *));
