@@ -1,7 +1,8 @@
 // app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
-import Providers from "./provider";
+import Providers from "./provider";            // keep if you need it
+import { AuthProvider } from "@/src/components/auth/AuthProvider";
 
 export const metadata: Metadata = {
   title: "Homica",
@@ -16,9 +17,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Pre-hydrate theme sync to avoid mismatches */}
+        {/* Pre-hydrate theme sync to avoid mismatches (class strategy) */}
         <script
-          // If you use a CSP, add a nonce and set it here.
           dangerouslySetInnerHTML={{
             __html: `
 (function () {
@@ -28,6 +28,9 @@ export default function RootLayout({
     if (t === 'dark' || (!t && m)) {
       document.documentElement.classList.add('dark');
       document.documentElement.style.colorScheme = 'dark';
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.style.colorScheme = 'light';
     }
   } catch (e) {}
 })();`,
@@ -35,7 +38,12 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-background text-foreground">
-        <Providers>{children}</Providers>
+        {/* Render children ONCE. If Providers already wraps ThemeProvider, great. */}
+        <Providers>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </Providers>
       </body>
     </html>
   );

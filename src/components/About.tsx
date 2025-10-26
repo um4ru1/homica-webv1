@@ -1,25 +1,25 @@
 import { motion } from 'motion/react';
-import { Shield, Heart, Users, Target, Award, Clock } from 'lucide-react';
+import { Shield, Heart, Users, Target, Award, Clock, Expand, Scaling, LandPlot } from 'lucide-react';
 
 export function About() {
   const timeline = [
     {
-      year: 'Agustus 2025',
-      title: 'Founding & Launch',
-      description: 'Homica resmi didirikan dengan visi menjadi platform layanan care & cleaning terpercaya di Indonesia',
+      year: 'Tahun 1 (2025 – 2026)',
+      title: 'Fondasi & Validasi Pasar',
+      description: 'Peluncuran penuh homica.id, rilis layanan Care+, Little, dan Fresh di Bandung Raya, pilot 100 pelanggan pertama, serta pendirian Training & Care Station untuk melatih minimal 50 tenaga kerja baru melalui kolaborasi komunitas dan lembaga pelatihan.',
       icon: Target
     },
     {
-      year: 'September 2025',
-      title: 'Platform Development',
-      description: 'Pengembangan sistem booking dan tracking real-time untuk transparansi layanan optimal',
-      icon: Users
+      year: 'Tahun 2 (2026 – 2027)',
+      title: 'Ekspansi Regional dan Digitalisasi Operasional',
+      description: 'Perluasan layanan ke Jabodetabek dan Surabaya, penerapan CRM dan predictive analytics, serta peluncuran Corporate Wellness Package (B2B) dengan kemitraan perusahaan, daycare, dan klinik.',
+      icon: Expand
     },
     {
-      year: 'Oktober 2025',
-      title: 'Expansion & Growth',
-      description: 'Ekspansi ke wilayah Jakarta dan sekitarnya dengan 100+ tenaga kerja terverifikasi',
-      icon: Award
+      year: 'Tahun 3 (2027 – 2028)',
+      title: 'Skalabilitas Nasional & Dampak Sosial',
+      description: 'transformasi menjadi ekosistem care digital nasional yang terintegrasi dengan program pemerintah/BUMN (Smart Family City) dan penguatan Homica Academy sebagai sistem sertifikasi serta pelatihan berkelanjutan.',
+      icon: LandPlot
     }
   ];
 
