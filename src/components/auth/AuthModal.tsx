@@ -16,7 +16,7 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
     });
     if (signUpErr) alert(signUpErr.message);
     else { alert('Check your email to verify.'); onClose(); }
-  }
+  } 
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50">
