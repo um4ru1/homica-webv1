@@ -10,6 +10,7 @@ import { Testimonials } from './Testimonials';
 import { Blog } from './Blog';
 import { Contact } from './Contact';
 import { Footer } from './Footer';
+import FloatingWA from '@/components/FloatingWA';
 import { ThemeProvider } from 'next-themes';
 import ThemeToggle from './ThemeToggle';
 
@@ -28,6 +29,7 @@ export default function App() {
       <Blog />
       <Contact />
       <Footer />
+      <FloatingWA phone="628111253003" />
     </div>
   );
 }

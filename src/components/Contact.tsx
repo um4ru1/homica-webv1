@@ -5,6 +5,20 @@ import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Phone, Mail, MapPin, Clock, MessageCircle, Send } from 'lucide-react';
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
+
+// Import MapBandung dengan dynamic import untuk menghindari SSR issues
+const MapBandung = dynamic(() => import('./MapBandung'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-80 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+      <div className="text-center text-gray-500">
+        <MapPin className="w-12 h-12 mx-auto mb-4 animate-pulse" />
+        <p className="text-lg font-medium">Memuat Peta...</p>
+      </div>
+    </div>
+  )
+});
 
 export function Contact() {
   const [formData, setFormData] = useState({
@@ -95,8 +109,8 @@ export function Contact() {
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1 dark:text-customtext">Alamat Kantor</h4>
                     <p className="text-gray-600 dark:text-customtext2">
-                      Jl. Sudirman No. 123<br />
-                      Jakarta Pusat 10110<br />
+                      Jl. Ganesha No. 10<br />
+                      Bandung 40132<br />
                       Indonesia
                     </p>
                   </div>
@@ -211,7 +225,7 @@ export function Contact() {
                         name="service"
                         value={formData.service}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0A74DA] focus:border-[#0A74DA] bg-white dark:bg-custombg"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0A74DA] focus:border-[#0A74DA] bg-white dark:bg-custombg dark:text-customtext"
                       >
                         <option value="">Pilih Layanan</option>
                         <option value="care-plus">Care+ (Pendampingan Lansia)</option>
@@ -261,7 +275,7 @@ export function Contact() {
                   </div>
 
                   {/* Privacy Notice */}
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 dark:text-customtext2">
                     Dengan mengirim pesan ini, Anda menyetujui{' '}
                     <a href="#" className="text-[#0A74DA] hover:underline">
                       Kebijakan Privasi
@@ -278,7 +292,7 @@ export function Contact() {
           </motion.div>
         </div>
 
-        {/* Map Placeholder */}
+        {/* Interactive Map */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -287,13 +301,7 @@ export function Contact() {
           className="mt-16"
         >
           <Card className="overflow-hidden border-0 shadow-xl">
-            <div className="h-80 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-              <div className="text-center text-gray-500">
-                <MapPin className="w-12 h-12 mx-auto mb-4" />
-                <p className="text-lg font-medium">Interactive Map</p>
-                <p className="text-sm">Lokasi Kantor Pusat Homica</p>
-              </div>
-            </div>
+            <MapBandung />
           </Card>
         </motion.div>
       </div>

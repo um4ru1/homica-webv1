@@ -174,9 +174,11 @@ export function TrackingSystem() {
                       </div>
                     </div>
 
-                    <Button className="w-full bg-red-500 hover:bg-red-600 text-custom-button-text">
-                      <AlertTriangle className="w-4 h-4 mr-2" />
-                      Emergency Button
+                    <Button asChild className="w-full bg-red-500 hover:bg-red-600 text-custom-button-text">
+                      <a href="services#servicesall">
+                        <AlertTriangle className="w-4 h-4 mr-2" />
+                        <span>Emergency Button</span>
+                      </a>
                     </Button>
                   </div>
                 </div>
@@ -282,7 +284,9 @@ export function TrackingSystem() {
 
           <div className="text-center mt-8">
             <Button size="lg" className="bg-[#0A74DA] hover:bg-[#0A74DA]/90 text-custom-button-text">
-              Coba Tracking System
+              <a href="services#servicesall">
+                Coba Tracking System 
+              </a>
             </Button>
           </div>
         </motion.div>

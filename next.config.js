@@ -3,6 +3,18 @@ const path = require('path');
 
 const nextConfig = {
   reactStrictMode: true,
+  // Konfigurasi gambar untuk Supabase
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'moloznuvdtfehxsufsxm.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
+      },
+    ],
+  },
+  // Konfigurasi Webpack yang sudah ada
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/i,
@@ -17,4 +29,5 @@ const nextConfig = {
     return config;
   }
 }
+
 module.exports = nextConfig;

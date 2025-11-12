@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Button } from './ui/button';
-import { Menu, X, LogIn, LogOut, UserRound, Briefcase, Crown } from 'lucide-react';
+import { Menu, X, LogIn, UserRound } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/utils/supabase/client';
@@ -15,19 +15,16 @@ export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const RoleBadge = () => {
-    if (!role) return null;
-    const label = role === 'owner' ? 'Owner' : role === 'worker' ? 'Homica Family' : 'User';
-    const Icon = role === 'owner' ? Crown : role === 'worker' ? Briefcase : UserRound;
-    return (
-      <span className="inline-flex items-center gap-1 rounded-xl bg-custombg2 px-2 py-1 text-xs dark:text-customtext2">
-        <Icon className="h-3.5 w-3.5" />
-        {label}
-      </span>
-    );
-  };
+  // Semua role pakai ikon UserRound; label worker tetap "Homica Family"
+  const roleLabel = role === 'worker' ? 'Homica Family' : 'User';
+  const RoleIcon = UserRound;
 
   const nextParam = encodeURIComponent(pathname || '/');
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    router.refresh();
+  }
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-100 bg-white/50 backdrop-blur-sm dark:border-gray-800 dark:bg-custombg/50">
@@ -55,9 +52,19 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Right: role + auth */}
-          <div className="hidden items-center gap-3 md:flex">
-            <RoleBadge />
+          {/* Right: chip ke /user + auth (tanpa ikon sign-out) */}
+          <div className="hidden items-center gap-4 md:flex">
+            {session && (
+              <Link
+                href="/user"
+                className="inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs hover:bg-white/50 dark:hover:bg-white/5 dark:border-gray-700"
+                title="Buka profil"
+              >
+                <RoleIcon className="h-3.5 w-3.5" />
+                <span className="capitalize">{roleLabel}</span>
+              </Link>
+            )}
+
             {!session ? (
               <Button asChild className="bg-[#0A74DA] text-custom-button-text hover:bg-[#0A74DA]/90">
                 <Link href={`/signin?next=${nextParam}`}>
@@ -65,23 +72,13 @@ export function Navbar() {
                 </Link>
               </Button>
             ) : (
-              <>
-                <Button asChild variant="outline" className="dark:border-gray-700">
-                  <Link href={role === 'owner' ? '/dashboard/owner' : role === 'worker' ? '/dashboard/worker' : '/dashboard'}>
-                    Dashboard
-                  </Link>
-                </Button>
-                <Button
-                  onClick={async () => {
-                    await supabase.auth.signOut();
-                    router.refresh();
-                  }}
-                  variant="ghost"
-                  className="text-red-500 hover:text-red-600"
-                >
-                  <LogOut className="mr-2 h-4 w-4" /> Sign out
-                </Button>
-              </>
+              <Button
+                onClick={handleSignOut}
+                variant="ghost"
+                className="text-red-500 hover:text-red-600"
+              >
+                {/* tanpa ikon */} Sign out
+              </Button>
             )}
           </div>
 
@@ -108,6 +105,17 @@ export function Navbar() {
               ))}
 
               <div className="flex flex-col space-y-2 px-3 pt-2">
+                {session && (
+                  <Link
+                    href="/user"
+                    className="flex items-center gap-2 rounded-xl border px-3 py-2 text-sm dark:border-gray-700"
+                    title="Buka profil"
+                  >
+                    <RoleIcon className="h-4 w-4" />
+                    <span className="capitalize">{roleLabel}</span>
+                  </Link>
+                )}
+
                 {!session ? (
                   <Button asChild className="bg-[#0A74DA] hover:bg-[#0A74DA]/90">
                     <Link href={`/signin?next=${nextParam}`}>
@@ -115,24 +123,15 @@ export function Navbar() {
                     </Link>
                   </Button>
                 ) : (
-                  <>
-                    <Button asChild variant="outline" className="dark:border-gray-700">
-                      <Link href={role === 'owner' ? '/dashboard/owner' : role === 'worker' ? '/dashboard/worker' : '/dashboard'}>
-                        Dashboard
-                      </Link>
-                    </Button>
-                    <Button
-                      onClick={async () => {
-                        await supabase.auth.signOut();
-                        router.refresh();
-                      }}
-                      variant="ghost"
-                      className="text-red-500"
-                    >
-                      <LogOut className="mr-2 h-4 w-4" /> Sign out
-                    </Button>
-                  </>
+                  <Button
+                    onClick={handleSignOut}
+                    variant="ghost"
+                    className="text-red-500"
+                  >
+                    Sign out
+                  </Button>
                 )}
+
                 <Button className="bg-[#0A74DA] hover:bg-[#0A74DA]/90">Pesan Sekarang</Button>
               </div>
             </div>

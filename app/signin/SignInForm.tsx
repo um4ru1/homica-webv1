@@ -1,139 +1,226 @@
+// app/signin/SignInForm.tsx
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { supabase } from "@/utils/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/utils/supabase/client";
 
-export default function SignInPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
+type Mode = "user" | "worker";
+type Tab = "signin" | "signup";
+
+export default function SignInForm() {
   const router = useRouter();
-  const params = useSearchParams();
-  const next = params.get("next") || "/";
+  const sp = useSearchParams();
 
-  function LoadingFallback() {
-  return <p>Loading...</p>
-  }
-  <Suspense fallback={<LoadingFallback />}>
-    <form onSubmit={handleSubmit} className="space-y-3">
-      <input
-        type="email"
-        className="w-full rounded-xl border p-3 outline-none bg-background dark:bg-background border-black/10 dark:border-white/10"
-        placeholder="Email address"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        autoFocus
-      />
-      <input
-        type="password"
-        className="w-full rounded-xl border p-3 outline-none bg-background dark:bg-background border-black/10 dark:border-white/10"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
+  const [mode, setMode] = useState<Mode>("user");
+  const [tab, setTab] = useState<Tab>("signin");
 
-      <button
-        disabled={busy}
-        className="w-full rounded-xl px-4 py-3 font-medium bg-[#0A74DA] text-[var(--color-custom-button-text)] disabled:opacity-60"
-      >
-        {busy ? "Processing…" : "Continue"}
-      </button>
+  const [email, setEmail] = useState("");
+  const [pw, setPw] = useState("");
+  const [pw2, setPw2] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
 
-      {msg && (
-        <p className="text-sm text-yellow-500/90 bg-yellow-500/10 rounded-lg p-2">
-          {msg}
-        </p>
-      )}
-    </form>
-  </Suspense>;
-  
-  async function handleSubmit(e: React.FormEvent) {
+  useEffect(() => {
+    const q = sp.get("mode");
+    if (q === "worker" || q === "user") setMode(q);
+  }, [sp]);
+
+  async function onSignin(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    setMsg(null);
-
-    // 1) Try sign-in
-    const { error: signInErr } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (!signInErr) {
-      router.push(next);
-      return;
+    setErr(null);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password: pw });
+      if (error) throw error;
+      // send them to post-login resolver with mode
+      router.push(`/post-login?mode=${mode}`);
+    } catch (e: any) {
+      setErr(e?.message ?? "Sign in failed.");
+    } finally {
+      setBusy(false);
     }
+  }
 
-    // 2) If fails, auto sign-up
-    const { error: signUpErr } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: `${location.origin}` },
-    });
+  async function onSignup(e: React.FormEvent) {
+    e.preventDefault();
+    if (pw.length < 6) return setErr("Password minimal 6 karakter.");
+    if (pw !== pw2) return setErr("Konfirmasi password tidak cocok.");
+    setBusy(true);
+    setErr(null);
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password: pw,
+        options: {
+          emailRedirectTo: `${location.origin}/post-login?mode=${mode}`,
+        },
+      });
+      if (error) throw error;
+      alert("Cek email untuk verifikasi akun.");
+      router.push("/");
+    } catch (e: any) {
+      setErr(e?.message ?? "Sign up failed.");
+    } finally {
+      setBusy(false);
+    }
+  }
 
-    if (signUpErr) setMsg(signUpErr.message);
-    else setMsg("Check your email to verify your account.");
-    setBusy(false);
+  async function signInWithGoogle() {
+    setBusy(true);
+    setErr(null);
+    try {
+      await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${location.origin}/post-login?mode=${mode}`,
+        },
+      });
+      // Supabase will redirect; no push here
+    } catch (e: any) {
+      setErr(e?.message ?? "Google sign-in gagal.");
+      setBusy(false);
+    }
   }
 
   return (
-    <main className="min-h-[calc(100dvh-80px)] w-full grid place-items-center px-4">
-      <div className="w-full max-w-md rounded-2xl shadow-lg p-6 bg-[var(--color-surface)] dark:bg-[var(--color-surface)]">
-        {/* Homica brand header */}
-        <div className="mb-6 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm bg-background/50">
-            <span className="font-semibold">Homica</span>
-            <span className="opacity-70">Sign in / Sign up</span>
-          </div>
-          <h1 className="mt-3 text-2xl font-bold">Welcome back</h1>
-          <p className="text-sm opacity-80">Use your email & password</p>
-        </div>
+    <div className="rounded-2xl bg-white p-6 shadow-xl dark:bg-custombg2 dark:text-customtext">
+      {/* Mode toggle */}
+      <div className="mb-4 grid grid-cols-2 gap-2">
+        <button
+          onClick={() => setMode("user")}
+          className={`rounded-lg px-3 py-2 border text-sm font-medium ${
+            mode === "user" ? "bg-blue-600 text-white border-blue-600" : "dark:border-gray-700"
+          }`}
+        >
+          Masuk sebagai Pengguna
+        </button>
+        <button
+          onClick={() => setMode("worker")}
+          className={`rounded-lg px-3 py-2 border text-sm font-medium ${
+            mode === "worker" ? "bg-blue-600 text-white border-blue-600" : "dark:border-gray-700"
+          }`}
+        >
+          Masuk sebagai Pekerja
+        </button>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-3">
+      {/* Tab toggle */}
+      <div className="mb-4 flex gap-2">
+        <button
+          onClick={() => setTab("signin")}
+          className={`rounded-lg px-3 py-2 border text-sm font-medium ${
+            tab === "signin" ? "bg-blue-600 text-white border-blue-600" : "dark:border-gray-700"
+          }`}
+        >
+          Sign in
+        </button>
+        <button
+          onClick={() => setTab("signup")}
+          className={`rounded-lg px-3 py-2 border text-sm font-medium ${
+            tab === "signup" ? "bg-blue-600 text-white border-blue-600" : "dark:border-gray-700"
+          }`}
+        >
+          Sign up
+        </button>
+      </div>
+
+      <h1 className="mb-2 text-2xl font-bold">Welcome back</h1>
+      <p className="mb-4 text-sm opacity-80">
+        {mode === "user"
+          ? tab === "signin"
+            ? "Masuk dengan email & password Anda atau Google."
+            : "Buat akun baru (kami kirim email verifikasi)."
+          : "Khusus pekerja: jika pertama kali, Anda akan diminta melengkapi data pekerja."}
+      </p>
+
+      {err && (
+        <div className="mb-3 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {err}
+        </div>
+      )}
+
+      {tab === "signin" ? (
+        <form onSubmit={onSignin} className="space-y-3">
           <input
             type="email"
-            className="w-full rounded-xl border p-3 outline-none bg-background dark:bg-background border-black/10 dark:border-white/10"
-            placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email address"
+            className="w-full rounded-lg border p-2 dark:bg-custombg dark:border-gray-700"
             required
-            autoFocus
           />
           <input
             type="password"
-            className="w-full rounded-xl border p-3 outline-none bg-background dark:bg-background border-black/10 dark:border-white/10"
+            value={pw}
+            onChange={(e) => setPw(e.target.value)}
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            className="w-full rounded-lg border p-2 dark:bg-custombg dark:border-gray-700"
             required
           />
-
           <button
             disabled={busy}
-            className="w-full rounded-xl px-4 py-3 font-medium bg-[#0A74DA] text-[var(--color-custom-button-text)] disabled:opacity-60"
+            className="w-full rounded-lg bg-[#0A74DA] px-4 py-2 font-medium text-white disabled:opacity-60"
           >
-            {busy ? "Processing…" : "Continue"}
+            {busy ? "Processing…" : "Sign in"}
           </button>
-
-          {msg && (
-            <p className="text-sm text-yellow-500/90 bg-yellow-500/10 rounded-lg p-2">
-              {msg}
-            </p>
-          )}
         </form>
+      ) : (
+        <form onSubmit={onSignup} className="space-y-3">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email address"
+            className="w-full rounded-lg border p-2 dark:bg-custombg dark:border-gray-700"
+            required
+          />
+          <input
+            type="password"
+            value={pw}
+            onChange={(e) => setPw(e.target.value)}
+            placeholder="Password (min 6)"
+            className="w-full rounded-lg border p-2 dark:bg-custombg dark:border-gray-700"
+            required
+            minLength={6}
+          />
+          <input
+            type="password"
+            value={pw2}
+            onChange={(e) => setPw2(e.target.value)}
+            placeholder="Confirm password"
+            className="w-full rounded-lg border p-2 dark:bg-custombg dark:border-gray-700"
+            required
+            minLength={6}
+          />
+          <button
+            disabled={busy}
+            className="w-full rounded-lg bg-[#0A74DA] px-4 py-2 font-medium text-white disabled:opacity-60"
+          >
+            {busy ? "Processing…" : "Sign up"}
+          </button>
+        </form>
+      )}
 
-        <div className="mt-6 text-center text-sm opacity-80">
-          <span>Back to </span>
-          <Link href="/" className="underline underline-offset-4">
-            Home
-          </Link>
-        </div>
+      <div className="my-4 flex items-center justify-center gap-3 text-sm opacity-70">
+        <span className="h-px w-16 bg-current/30" />
+        <span>atau</span>
+        <span className="h-px w-16 bg-current/30" />
       </div>
-    </main>
+
+      <button
+        onClick={signInWithGoogle}
+        disabled={busy}
+        className="w-full rounded-lg border px-4 py-2 font-medium dark:border-gray-700 disabled:opacity-60"
+      >
+        Continue with Google
+      </button>
+
+      <div className="mt-4 text-center text-sm">
+        <a href="/" className="underline">
+          Back to Home
+        </a>
+      </div>
+    </div>
   );
 }

@@ -3,9 +3,12 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Check, Star, Crown } from 'lucide-react';
 import { useState } from 'react';
+import { waHref } from '@/components/FloatingWA';
 
 export function Pricing() {
   const [billingPeriod, setBillingPeriod] = useState<'daily' | 'monthly'>('daily');
+
+  const href = waHref('628111253003', 'Halo, saya mau konsultasi gratis…');
 
   const pricingPlans = [
     {
@@ -19,7 +22,7 @@ export function Pricing() {
         monthly: '3.5JT'
       },
       features: [
-        'Pendampingan 8 jam/hari',
+        'Pendampingan 8 jam/sesi',
         'Bantuan aktivitas harian',
         'Monitoring kesehatan dasar',
         'Laporan harian keluarga',
@@ -38,7 +41,7 @@ export function Pricing() {
       },
       features: [
         'Nanny tersertifikasi',
-        'Perawatan bayi 10 jam/hari',
+        'Perawatan bayi 10 jam/sesi',
         'Aktivitas edukatif',
         'Meal preparation',
         'Progress report mingguan',
@@ -94,7 +97,7 @@ export function Pricing() {
                   : 'text-gray-600 hover:text-[#0A74DA]'
               }`}
             >
-              Harian
+              Sesi
             </button>
             <button
               onClick={() => setBillingPeriod('monthly')}
@@ -144,7 +147,7 @@ export function Pricing() {
                     <div className="text-4xl font-bold text-gray-900 font-['Poppins'] dark:text-customtext2">
                       {plan.prices[billingPeriod]}
                       <span className="text-lg font-normal text-gray-600 dark:text-customtext2">
-                        /{billingPeriod === 'daily' ? 'hari' : 'bulan'}
+                        /{billingPeriod === 'daily' ? 'sesi' : 'bulan'}
                       </span>
                     </div>
                     {billingPeriod === 'monthly' && (
@@ -208,11 +211,16 @@ export function Pricing() {
               Hubungi tim kami untuk konsultasi gratis.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="outline" size="lg" className="border-[#0A74DA] text-[#0A74DA] hover:bg-[#0A74DA] hover:text-white">
-                Konsultasi Gratis
+              <Button asChild variant="outline" size="lg" className="border-[#0A74DA] text-[#0A74DA] hover:bg-[#0A74DA] hover:text-white">
+                <a href={href} target="_blank" rel="noopener noreferrer"> 
+                  Konsultasi Gratis
+                </a>
+    
               </Button>
-              <Button size="lg" className="bg-[#00BFA6] hover:bg-[#00BFA6]/90 text-custom-button-text">
-                Hubungi Sales
+              <Button asChild size="lg" className="bg-[#00BFA6] hover:bg-[#00BFA6]/90 text-custom-button-text">
+                <a href={href} target="_blank" rel="noopener noreferrer">  
+                  Hubungi Admin
+                </a>
               </Button>
             </div>
           </div>
