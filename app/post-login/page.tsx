@@ -1,5 +1,4 @@
 // app/post-login/page.tsx
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServer } from "@/utils/supabase/server";
 
@@ -8,19 +7,21 @@ export const dynamic = "force-dynamic";
 export default async function PostLoginPage({
   searchParams,
 }: {
-  searchParams: { mode?: "user" | "worker" };
+  searchParams: Promise<{ mode?: "user" | "worker" }>;
 }) {
-  const mode = searchParams.mode === "worker" ? "worker" : "user";
+  // searchParams adalah Promise → await
+  const sp = await searchParams;
+  const mode: "user" | "worker" = sp.mode === "worker" ? "worker" : "user";
 
   const supabase = createSupabaseServer();
 
-  // 1) make sure we have a session
+  // 1) pastikan ada session
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect(`/signin?mode=${mode}`);
 
-  // 2) ensure profiles row exists (optional but nice)
+  // 2) pastikan row profiles ada
   await supabase.from("profiles").upsert(
     {
       id: user.id,
@@ -33,8 +34,8 @@ export default async function PostLoginPage({
     redirect("/");
   }
 
-  // mode === 'worker'
-  // 3) check worker row
+  // mode === "worker"
+  // 3) cek row workers
   const { data: worker } = await supabase
     .from("workers")
     .select("id, verified")
@@ -45,6 +46,6 @@ export default async function PostLoginPage({
     redirect("/worker/onboarding");
   }
 
-  // already has worker row; return home (or dashboard later)
+  // sudah punya row worker → ke beranda (atau dashboard nantinya)
   redirect("/");
 }
