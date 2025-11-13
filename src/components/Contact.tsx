@@ -84,8 +84,8 @@ export function Contact() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1 dark:text-customtext">Call Center</h4>
-                    <p className="text-gray-600 dark:text-customtext2">+62 21 1234 5678</p>
-                    <p className="text-gray-600 dark:text-customtext2">+62 812 3456 7890</p>
+                    <p className="text-gray-600 dark:text-customtext2">+62 811 1253 003</p>
+                    <p className="text-gray-600 dark:text-customtext2">.</p>
                   </div>
                 </div>
 
@@ -109,9 +109,8 @@ export function Contact() {
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-1 dark:text-customtext">Alamat Kantor</h4>
                     <p className="text-gray-600 dark:text-customtext2">
-                      Jl. Ganesha No. 10<br />
-                      Bandung 40132<br />
-                      Indonesia
+                      Jl. Dago Barat No. 75<br />
+                      Bandung, Indonesia<br />
                     </p>
                   </div>
                 </div>

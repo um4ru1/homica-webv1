@@ -75,7 +75,7 @@ export default function MapBandung() {
           .bindPopup(`
             <div style="text-align: center; min-width: 150px;">
               <strong style="color: #0A74DA; font-weight: 600; font-size: 14px;">Homica Office</strong>
-              <p style="font-size: 12px; color: #6b7280; margin-top: 4px; margin-bottom: 0;">Institut Teknologi Bandung</p>
+              <p style="font-size: 12px; color: #6b7280; margin-top: 4px; margin-bottom: 0;">Jl. Dago Barat No. 75</p>
             </div>
           `)
           .addTo(map);
