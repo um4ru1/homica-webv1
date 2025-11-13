@@ -76,14 +76,17 @@ export function HowItWorks() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ duration: 0.5, delay: index * 0.2 + 0.3 }}
-                      className={`w-24 h-24 ${step.color} rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg`}
+                      className={`relative w-24 h-24 ${step.color} rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg`}
                     >
                       <step.icon className="w-10 h-10 text-white" />
+                          <div className="absolute -top-1 -right-1 w-8 h-8 bg-white border-2 border-gray-200 rounded-full flex items-center justify-center shadow-sm">
+                            <span className="text-sm font-bold text-gray-700">{step.id}</span>
+                          </div>
                     </motion.div>
 
-                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-white border-2 border-gray-200 rounded-full flex items-center justify-center shadow-sm">
+                    {/* <div className="absolute -top-2 -right-5 w-8 h-8 bg-white border-2 border-gray-200 rounded-full flex items-center justify-center shadow-sm">
                       <span className="text-sm font-bold text-gray-700">{step.id}</span>
-                    </div>
+                    </div> */}
 
                     <h3 className="font-['Poppins'] text-xl font-bold text-gray-900 mb-3 dark:text-customtext">{step.title}</h3>
                     <p className="text-gray-600 text-sm leading-relaxed dark:text-customtext2">{step.description}</p>

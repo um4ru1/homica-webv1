@@ -8,35 +8,35 @@ export function Blog() {
   const blogPosts = [
     {
       id: 1,
-      title: '5 Tips Merawat Lansia di Rumah dengan Aman',
-      excerpt: 'Panduan lengkap untuk keluarga yang ingin memberikan perawatan terbaik untuk orang tua di rumah.',
+      title: 'Menemani dengan Hati: Psikologi Orang Paruh Baya dan Peran Homica Care+',
+      excerpt: 'Menjadi paruh baya atau lanjut usia sering kali membawa perubahan besar dalam hidup seseorang. Bukan hanya tubuh yang mulai menurun kemampuannya, tetapi...',
       category: 'Elderly Care',
       author: 'Dr. Sarah Ahmad',
       date: '15 Maret 2024',
       readTime: '5 min read',
-      image: 'https://images.unsplash.com/flagged/photo-1567318362383-fa193e67bbd5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbGRlcmx5JTIwY2FyZSUyMGNhcmVnaXZlciUyMGZhbWlseXxlbnwxfHx8fDE3NTc1ODY2MjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+      image: '/images/careplus_article.png',
       tags: ['Care', 'Health', 'Family']
     },
     {
       id: 2,
-      title: 'Perkembangan Bayi 0-12 Bulan: Milestone Penting',
-      excerpt: 'Memahami tahapan perkembangan bayi dan cara stimulasi yang tepat untuk mendukung tumbuh kembang optimal.',
+      title: 'Tumbuh Bahagia dengan Cerita Kecil tentang Bayi yang Ceria',
+      excerpt: 'Tidak ada pemandangan yang lebih menenangkan bagi orang tua selain melihat bayi tertawa lepas. Tawa kecil itu menjadi tanda bahwa mereka merasa aman, dicintai, dan bahagia. Namun...',
       category: 'Child Care',
       author: 'Sari Pediatri',
       date: '12 Maret 2024',
       readTime: '7 min read',
-      image: 'https://images.unsplash.com/photo-1600563093202-337471bde37e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiYWJ5JTIwY2FyZSUyMGNoaWxkY2FyZSUyMG5hbm55fGVufDF8fHx8MTc1NzU4NjYyNHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+      image: '/images/little_article.png',
       tags: ['Baby', 'Development', 'Parenting']
     },
     {
       id: 3,
-      title: 'Cara Membersihkan Rumah yang Efektif dan Ramah Lingkungan',
-      excerpt: 'Tips dan trik membersihkan rumah menggunakan produk alami yang aman untuk keluarga dan lingkungan.',
+      title: 'Rumah Bersih, Hidup Sehat sebagai Kunci Kecil',
+      excerpt: 'Setiap orang tentu ingin pulang ke rumah yang bersih dan menenangkan. Namun, di tengah kesibukan sehari-hari, menjaga kebersihan sering kali menjadi hal yang terlewat...',
       category: 'House Cleaning',
       author: 'Clean Living Team',
       date: '10 Maret 2024',
       readTime: '4 min read',
-      image: 'https://images.unsplash.com/photo-1581578949510-fa7315c4c350?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob3VzZSUyMGNsZWFuaW5nJTIwc2VydmljZSUyMHByb2Zlc3Npb25hbHxlbnwxfHx8fDE3NTc1NjM3NDd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+      image: '/images/fresh_article.png',
       tags: ['Cleaning', 'Eco-friendly', 'Tips']
     },
     {
@@ -200,7 +200,7 @@ export function Blog() {
                   </div>
                 </div>
                 
-                <CardContent className="p-6 flex flex-col flex-grow">
+                <CardContent className="p-6 flex flex-col grow">
                   <div className="flex items-center space-x-3 text-xs text-gray-600 mb-3 dark:text-customtext2">
                     <div className="flex items-center">
                       <Calendar className="w-3 h-3 mr-1" />
@@ -216,7 +216,7 @@ export function Blog() {
                     {post.title}
                   </h3>
                   
-                  <p className="text-gray-600 mb-4 text-sm leading-relaxed flex-grow dark:text-customtext2">
+                  <p className="text-gray-600 mb-4 text-sm leading-relaxed grow dark:text-customtext2">
                     {post.excerpt}
                   </p>
 

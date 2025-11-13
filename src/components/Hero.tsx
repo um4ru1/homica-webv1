@@ -134,7 +134,7 @@ export function Hero() {
                 className="relative z-10"
               >
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1578496780896-7081cc23c111?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+                  src="/images/Foto-Homica-Baru.jpg"
                   alt="Happy family at home"
                   className="w-full h-auto rounded-2xl shadow-2xl"
                 />

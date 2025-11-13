@@ -14,7 +14,7 @@ const caregivers = [
     reviews: 127,
     experience: '5+ years',
     location: 'Jakarta Selatan',
-    image: 'https://images.unsplash.com/photo-1446161543652-83eaa65fddab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBmcmllbmRseSUyMGNhcmVnaXZlciUyMHNtaWxpbmd8ZW58MXx8fHwxNzU3NTg3ODg0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image: '/images/2.png',
     certifications: ['Certified Nurse Assistant', 'First Aid', 'CPR'],
     available: true
   },
@@ -26,7 +26,7 @@ const caregivers = [
     reviews: 98,
     experience: '3+ years',
     location: 'Jakarta Pusat',
-    image: 'https://images.unsplash.com/photo-1709127347884-a106974ef58d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmcmllbmRseSUyMG5hbm55JTIwY2hpbGRjYXJlJTIwcHJvZmVzc2lvbmFsfGVufDF8fHx8MTc1NzU4Nzg5M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image: '/images/3.png',
     certifications: ['Early Childhood Education', 'Child Psychology', 'Safety Training'],
     available: true
   },
@@ -38,9 +38,9 @@ const caregivers = [
     reviews: 156,
     experience: '4+ years',
     location: 'Jakarta Barat',
-    image: 'https://images.unsplash.com/photo-1742535036235-0fc7a17d651f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjbGVhbmluZyUyMHNlcnZpY2UlMjBwcm9mZXNzaW9uYWwlMjB3b21hbiUyMHNtaWxpbmd8ZW58MXx8fHwxNzU3NTg3ODkwfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image: '/images/2.png',
     certifications: ['Professional Cleaning', 'Eco-Safe Products', 'Time Management'],
-    available: false
+    available: true
   },
   {
     id: 4,
@@ -50,7 +50,7 @@ const caregivers = [
     reviews: 89,
     experience: '6+ years',
     location: 'Jakarta Timur',
-    image: 'https://images.unsplash.com/photo-1676552055618-22ec8cde399a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxudXJzZSUyMGhlYWx0aGNhcmUlMjBwcm9mZXNzaW9uYWwlMjBzbWlsaW5nJTIwdW5pZm9ybXxlbnwxfHx8fDE3NTc1ODc4ODZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image: '/images/5.png',
     certifications: ['Medical Assistant', 'Patient Care', 'Emergency Response'],
     available: true
   },
@@ -62,7 +62,7 @@ const caregivers = [
     reviews: 203,
     experience: '7+ years',
     location: 'Jakarta Selatan',
-    image: 'https://images.unsplash.com/photo-1446161543652-83eaa65fddab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBmcmllbmRseSUyMGNhcmVnaXZlciUyMHNtaWxpbmd8ZW58MXx8fHwxNzU3NTg3ODg0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image: '/images/4.png',
     certifications: ['Newborn Care', 'Lactation Support', 'Infant CPR'],
     available: true
   },
@@ -74,7 +74,7 @@ const caregivers = [
     reviews: 134,
     experience: '4+ years',
     location: 'Jakarta Utara',
-    image: 'https://images.unsplash.com/photo-1676552055618-22ec8cde399a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxudXJzZSUyMGhlYWx0aGNhcmUlMjBwcm9mZXNzaW9uYWwlMjBzbWlsaW5nJTIwdW5pZm9ybXxlbnwxfHx8fDE3NTc1ODc4ODZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image: '/images/5.png',
     certifications: ['Deep Cleaning', 'Equipment Handling', 'Quality Assurance'],
     available: true
   }
@@ -145,13 +145,19 @@ export function CaregiverProfiles() {
               <Card className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 dark:bg-custombg2 dark:bg-none">
                 <CardContent className="p-0">
                   {/* Image & Status */}
-                  <div className="relative">
+                  <div className="relative image-">
                     <ImageWithFallback
                       src={caregiver.image}
                       alt={caregiver.name}
-                      className="w-full h-48 object-cover"
-                    />
-                    
+                      className= {`w-full h-48 object-cover ${
+                                caregiver.id === 1 ? 'object-[50%_10%]' :
+                                caregiver.id === 2 ? 'object-[50%_20%]' :
+                                caregiver.id === 3 ? 'object-[40%_10%]' :
+                                caregiver.id === 4 ? 'object-[60%_10%]' :
+                                caregiver.id === 5 ? 'object-[60%_35%]' :
+                                caregiver.id === 6 ? 'object-[80%_10%]' :
+                                ''
+                              }`}/>
                     {/* Availability Badge */}
                     <div className="absolute top-4 right-4">
                       <Badge 
@@ -220,7 +226,7 @@ export function CaregiverProfiles() {
                         }`}
                         disabled={!caregiver.available}
                       >
-                        {caregiver.available ? 'Book Now' : 'Currently Unavailable'}
+                        {caregiver.available ? 'Book Now' : 'Available'}
                       </Button>
                     </div>
                   </div>

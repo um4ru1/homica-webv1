@@ -13,6 +13,7 @@ type HL = { icon: any; title: string; desc: string };
 const DB: Record<string, {
   title: string; subtitle: string; icon: any; color: string;
   longdesc: string; highlights: HL[]; faq: [string, string][];
+  bgClass?: string;
 }> = {
   'care-plus': {
     title: 'Care+',
@@ -31,8 +32,9 @@ const DB: Record<string, {
       ['Bagaimana penentuan jadwal?', 'Anda dapat memilih harian, mingguan, atau paket bulanan.'],
       ['Apakah ada uji coba?', 'Ada, pesan 1 sesi terlebih dulu untuk mencoba.'],
     ],
+    bgClass: "bg-[url('/images/Careplus.png')] dark:bg-[url('/images/Careplus.png')]",
   },
-  little: {
+  'little': {
     title: 'Little',
     subtitle: 'Pengasuhan Bayi',
     icon: Baby,
@@ -49,8 +51,9 @@ const DB: Record<string, {
       ['Apakah membawa peralatan?', 'Peralatan dasar disiapkan keluarga; nanny bawa toolkit kebersihan.'],
       ['Bagaimana matching?', 'Dicocokkan berdasar pengalaman & domisili.'],
     ],
+    bgClass: "bg-[url('/images/Little.png')] dark:bg-[url('/images/Little.png')] bg-bottom",
   },
-  fresh: {
+  'fresh': {
     title: 'Fresh',
     subtitle: 'Kebersihan Rumah & Kosan',
     icon: Sparkles,
@@ -67,6 +70,7 @@ const DB: Record<string, {
       ['Garansi puas?', 'Revisiting 24 jam jika ada bagian terlewat.'],
       ['Bisa kos/kontrakan?', 'Bisa rumah, apartemen, kos, kontrakan.'],
     ],
+    bgClass: "bg-[url('/images/Fresh.png')] dark:bg-[url('/images/Fresh.png')] bg-top ",
   },
 };
 
@@ -92,26 +96,28 @@ export default function ServiceDetail({
           Light: gradient terang
           Dark : solid custombg & no background-image */}
       <section
-        className="relative overflow-hidden rounded-none md:rounded-3xl md:mx-4
-                   bg-gradient-to-br from-blue-50 to-teal-50
-                   dark:bg-custombg dark:[background-image:none]"
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-8 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
-          <div>
+        className={`relative overflow-hidden rounded-none md:rounded-3xl md:mx-4
+                   ${svc.bgClass} bg-cover bg-bottom from-blue-50 to-teal-50`}>
+
+          {/* Overlay 2: fokus di area teks (kiri) */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent pointer-events-none" />
+
+        <div className="relative max-w-7xl mx-auto px-6 md:px-8 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center min-h-[420px]">
+          <div className="supports-[backdrop-filter]:backdrop-blur-[1px]">
             <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${svc.color} mb-6 shadow-lg`}>
               <Icon className="w-8 h-8 text-white" />
             </div>
 
-            <h1 className="text-3xl md:text-5xl font-['Poppins'] font-bold leading-tight text-gray-900 dark:text-customtext">
-              Upgrade kenyamanan keluarga dengan{' '}
-              <span className="text-[#0A74DA] dark:text-[#9BD1FF]">{svc.title}</span>
+            {/* Selalu putih + shadow untuk kontras */}
+            <h1 className="text-3xl md:text-5xl font-['Poppins'] font-bold leading-tight text-white drop-shadow-md">
+              Upgrade kenyamanan keluarga dengan <span className="text-[#9BD1FF]">{svc.title}</span>
             </h1>
 
-            <p className="mt-4 text-lg max-w-2xl text-gray-700 dark:text-customtext2">
+            {/* Selalu putih 90% */}
+            <p className="mt-4 text-lg max-w-2xl text-white/90">
               {svc.longdesc}
             </p>
 
-            {/* SATU tombol saja */}
             <div className="mt-8">
               <Link href={`/pre-checkout?service=${id}`}>
                 <Button className="bg-[#0A74DA] text-white hover:bg-[#0A74DA]/90 px-6">
