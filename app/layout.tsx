@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./provider";            // keep if you need it
-import { AuthProvider } from "@/src/components/auth/AuthProvider";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 
 export const metadata: Metadata = {
   title: "Homica",
