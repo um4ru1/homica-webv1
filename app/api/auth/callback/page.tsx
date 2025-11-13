@@ -1,31 +1,30 @@
-// app/auth/callback/page.tsx
+// app/api/auth/callback/page.tsx
 import { redirect } from 'next/navigation';
 import { createSupabaseServer } from '@/utils/supabase/server';
 
 export default async function AuthCallbackPage({
   searchParams,
 }: {
-  searchParams: { code?: string; mode?: 'user' | 'worker' };
+  searchParams: Promise<{ code?: string; mode?: 'user' | 'worker' }>;
 }) {
+  const { code, mode } = await searchParams;           // <-- unwrap
   const supabase = createSupabaseServer();
 
   // 1) Tukar code → session (PKCE)
-  if (searchParams.code) {
-    await supabase.auth.exchangeCodeForSession(searchParams.code);
+  if (code) {
+    await supabase.auth.exchangeCodeForSession(code);
   }
 
   // 2) Ambil user
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
-    // fallback ke login
-    redirect('/signin');
-  }
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect('/signin');
 
   // 3) Branching mode
-  const mode = searchParams.mode ?? 'user';
+  const m = mode ?? 'user';
 
-  if (mode === 'worker') {
-    // Cek status worker
+  if (m === 'worker') {
     const { data: w } = await supabase
       .from('workers')
       .select('id, verified')
@@ -33,10 +32,10 @@ export default async function AuthCallbackPage({
       .maybeSingle();
 
     if (!w) redirect('/worker/onboarding');
-    if (w && !w.verified) redirect('/worker/status');
-    redirect('/'); // verified
+    if (!w.verified) redirect('/worker/status');
+    redirect('/');
   }
 
-  // mode user → pulang ke home
+  // mode user
   redirect('/');
 }
