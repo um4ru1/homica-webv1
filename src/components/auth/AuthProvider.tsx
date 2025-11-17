@@ -1,32 +1,71 @@
-'use client';
+'use client'; // WAJIB, karena ini menggunakan React Hooks (useState, useEffect, etc)
+
 import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '@/utils/supabase/client';
+import { createClient } from '@/utils/supabase/client'; // <-- STEP PENTING
+import type { Session, SupabaseClient } from '@supabase/supabase-js';
 
-type Role = 'user' | 'worker' | 'owner';
-type Ctx = { session: import('@supabase/supabase-js').Session | null; role: Role | null; refresh: () => Promise<void>; };
+// Tipe untuk data yang akan kita sediakan di Context
+type AuthContextType = {
+  supabase: SupabaseClient;
+  session: Session | null;
+  isLoading: boolean;
+};
 
-const C = createContext<Ctx>({ session: null, role: null, refresh: async () => {} });
+// Buat Context-nya
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<Ctx['session']>(null);
-  const [role, setRole] = useState<Role | null>(null);
+// Buat Provider Component
+export default function AuthProvider({ children }: { children: React.ReactNode }) {
+  // INILAH PERBAIKANNYA:
+  // Kita buat instance supabase client DI SINI
+  const supabase = createClient(); 
+  
+  const [session, setSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const load = async () => {
+  // Fungsi load session
+  const loadSession = async () => {
     const { data: { session } } = await supabase.auth.getSession();
-    setSession(session ?? null);
-    if (session?.user) {
-      const { data } = await supabase.from('profiles').select('role').eq('id', session.user.id).single();
-      setRole((data?.role as Role) ?? null);
-    } else setRole(null);
+    setSession(session);
+    setIsLoading(false);
   };
 
+  // Ini adalah kode dari error Anda, tapi sekarang 'supabase' sudah terdefinisi
   useEffect(() => {
-    load();
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => { setSession(s); load(); });
-    return () => { sub.subscription.unsubscribe(); };
-  }, []);
+    loadSession(); // Ambil sesi saat pertama kali load
 
-  return <C.Provider value={{ session, role, refresh: load }}>{children}</C.Provider>;
+    // Dengarkan perubahan auth
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSession(s);
+      // Anda bisa hapus load() di sini jika onAuthStateChange sudah memberi session (s)
+      // load(); 
+    });
+
+    // Unsubscribe saat komponen di-unmount
+    return () => {
+      sub.subscription.unsubscribe();
+    };
+  }, [supabase]); // Tambahkan supabase sebagai dependensi
+
+  const value = {
+    supabase,
+    session,
+    isLoading,
+  };
+
+  // Kita sediakan 'value' ke semua 'children' (seluruh aplikasi Anda)
+  return (
+    <AuthContext.Provider value={value}>
+      {!isLoading ? children : <div>Loading...</div>}
+    </AuthContext.Provider>
+  );
 }
 
-export const useAuth = () => useContext(C);
+// Buat hook kustom agar komponen lain bisa akses data ini
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};

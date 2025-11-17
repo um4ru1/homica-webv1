@@ -1,196 +1,202 @@
-// app/worker/onboarding/worker-onboard-client.tsx
-"use client";
+'use client';
 
-import { useState } from "react";
-import { supabase } from "@/utils/supabase/client";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/components/auth/AuthProvider'; // Impor hook AuthProvider
 
-const AREAS = [
-  { id: "utara", label: "Bandung Utara" },
-  { id: "timur", label: "Bandung Timur" },
-  { id: "selatan", label: "Bandung Selatan" },
-  { id: "barat", label: "Bandung Barat" },
-] as const;
+export default function WorkerOnboardClient() {
+  const { supabase, session } = useAuth(); // Ambil supabase & session dari context
+  const router = useRouter();
+  
+  // State untuk form
+  const [loading, setLoading] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [bio, setBio] = useState('');
+  const [serviceTypes, setServiceTypes] = useState<string[]>([]);
+  const [availability, setAvailability] = useState<string[]>([]);
+  const [experience, setExperience] = useState(0);
+  const [certs, setCerts] = useState('[]'); // Simpan sebagai string JSON
 
-const TYPES = [
-  { id: "careplus", label: "Care+ (pendamping lansia)" },
-  { id: "little", label: "Little (pengasuhan bayi/anak)" },
-  { id: "fresh", label: "Fresh (cleaning/bersih rumah)" },
-] as const;
+  // Helper untuk Checkbox
+  const handleServiceTypeChange = (service: string) => {
+    setServiceTypes(prev => 
+      prev.includes(service) ? prev.filter(s => s !== service) : [...prev, service]
+    );
+  };
+  const handleDayChange = (day: string) => {
+    setAvailability(prev =>
+      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
+    );
+  };
 
-type Initial = {
-  id: string | null;
-  verified: boolean;
-  service_type: string | null;
-  phone: string;
-  areas: string[];
-  bio: string;
-};
+  const ALL_DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+  const ALL_SERVICES = ['fresh', 'careplus', 'little'];
 
-export default function WorkerOnboardClient({
-  email,
-  initial,
-}: {
-  email: string;
-  initial: Initial;
-}) {
-  const [serviceType, setServiceType] = useState<string>(
-    initial.service_type ?? "careplus"
-  );
-  const [phone, setPhone] = useState(initial.phone ?? "");
-  const [areas, setAreas] = useState<string[]>(initial.areas ?? []);
-  const [bio, setBio] = useState(initial.bio ?? "");
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
+  // Fungsi Submit Form
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!supabase || !session) return;
+    
+    setLoading(true);
 
-  function toggleArea(a: string) {
-    setAreas((prev) => (prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a]));
-  }
-
-  async function submit() {
-    setBusy(true);
-    setErr(null);
+    // Validasi JSON Sertifikasi
+    let certsJson;
     try {
-      const { data: ures } = await supabase.auth.getUser();
-      if (!ures.user) {
-        setErr("Sesi login berakhir. Silakan masuk kembali.");
-        return;
-      }
-
-      if (!phone.trim()) return setErr("Nomor telepon wajib diisi.");
-      if (areas.length === 0) return setErr("Pilih minimal satu area operasi.");
-      if (bio.trim().length < 20) return setErr("Deskripsi minimal 20 karakter.");
-
-      if (initial.id) {
-        const { error } = await supabase
-          .from("workers")
-          .update({
-            service_type: serviceType,
-            phone,
-            areas,
-            bio,
-          })
-          .eq("id", initial.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("workers").insert({
-          user_id: ures.user.id,
-          service_type: serviceType,
-          phone,
-          areas,
-          bio,
-          verified: false,
-        });
-        if (error) throw error;
-      }
-
-      // go home (navbar will already reflect the session)
-      location.href = "/";
-    } catch (e: any) {
-      setErr(e?.message ?? "Gagal menyimpan data.");
-    } finally {
-      setBusy(false);
+      certsJson = JSON.parse(certs);
+      if (!Array.isArray(certsJson)) throw new Error('Format harus array.');
+    } catch (err) {
+      alert('Format JSON Sertifikasi salah. Contoh: [{"name": "Sertifikat A", "year": 2024}]');
+      setLoading(false);
+      return;
     }
-  }
+    
+    // Siapkan data untuk INSERT
+    const newWorkerData = {
+      user_id: session.user.id, // Kunci utama
+      phone: phone,
+      address: address,
+      bio: bio,
+      service_types: serviceTypes,
+      availability_days: availability,
+      experience_years: experience,
+      certifications: certsJson,
+      verified: false, // KUNCI: Set 'verified' ke 'false'
+    };
+
+    // INSERT ke tabel 'workers'
+    const { error } = await supabase
+      .from('workers')
+      .insert(newWorkerData);
+
+    setLoading(false);
+
+    if (error) {
+      alert('Terjadi error: ' + error.message);
+    } else {
+      alert('Pendaftaran berhasil! Akun Anda akan segera kami verifikasi.');
+      // Arahkan ke halaman status
+      router.push('/worker/status');
+    }
+  };
 
   return (
-    <div className="rounded-2xl border p-6 shadow-xl bg-white dark:bg-custombg2 dark:border-gray-800">
-      <h1 className="text-2xl font-bold mb-2 dark:text-customtext">Daftar Homica Family</h1>
-      <p className="text-sm mb-6 dark:text-customtext2">
-        Email: <span className="font-medium">{email}</span>. Lengkapi data berikut, tim kami akan
-        menghubungi untuk verifikasi.
-      </p>
-
-      {err && (
-        <div className="mb-4 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
-          {err}
-        </div>
-      )}
-
-      <div className="space-y-5">
-        {/* Kategori */}
-        <div>
-          <label className="block text-sm font-medium mb-2 dark:text-customtext">
-            Ingin jadi pekerja di
-          </label>
-          <div className="grid sm:grid-cols-3 gap-2">
-            {TYPES.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setServiceType(t.id)}
-                className={`rounded-lg px-3 py-2 border text-sm text-left dark:border-gray-700 ${
-                  serviceType === t.id ? "bg-[#0A74DA] text-white border-[#0A74DA]" : ""
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Telp */}
-        <div>
-          <label className="block text-sm font-medium mb-1 dark:text-customtext">No. Telepon</label>
-          <input
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="08xxxxxxxxxx"
-            className="w-full rounded-lg border p-2 dark:bg-custombg dark:border-gray-700"
-          />
-        </div>
-
-        {/* Area */}
-        <div>
-          <label className="block text-sm font-medium mb-2 dark:text-customtext">
-            Area Operasi (Bandung)
-          </label>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {AREAS.map((a) => (
-              <label
-                key={a.id}
-                className={`rounded-lg px-3 py-2 border text-sm cursor-pointer select-none dark:border-gray-700 ${
-                  areas.includes(a.id) ? "bg-emerald-600 text-white border-emerald-600" : ""
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  className="mr-2"
-                  checked={areas.includes(a.id)}
-                  onChange={() => toggleArea(a.id)}
-                />
-                {a.label}
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {/* Deskripsi */}
-        <div>
-          <label className="block text-sm font-medium mb-1 dark:text-customtext">
-            Deskripsi singkat
-          </label>
-          <textarea
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            rows={4}
-            placeholder="Jelaskan pengalaman, sertifikasi, ketersediaan jam, dll."
-            className="w-full rounded-lg border p-2 dark:bg-custombg dark:border-gray-700"
-          />
-        </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Bio (Short Description) */}
+      <div>
+        <label htmlFor="bio" className="block text-sm font-medium text-gray-400">
+          Deskripsi Singkat
+        </label>
+        <textarea 
+          id="bio" 
+          rows={3} 
+          value={bio} 
+          onChange={(e) => setBio(e.target.value)} 
+          className="mt-1 block w-full bg-gray-900 border-gray-700 rounded-md shadow-sm text-white" 
+          placeholder="Saya seorang pekerja keras..."
+          required
+        />
       </div>
 
-      <div className="mt-6 flex gap-3">
-        <button
-          onClick={submit}
-          disabled={busy}
-          className="rounded-lg bg-[#0A74DA] px-4 py-2 font-medium text-white disabled:opacity-60"
-        >
-          {busy ? "Mengirim…" : "Kirim & Ajukan Verifikasi"}
-        </button>
-        <a href="/" className="rounded-lg border px-4 py-2 dark:border-gray-700">
-          Batal
-        </a>
+      {/* Nomor Telepon */}
+      <div>
+        <label htmlFor="phone" className="block text-sm font-medium text-gray-400">
+          Nomor Telepon (WhatsApp)
+        </label>
+        <input 
+          type="tel" 
+          id="phone" 
+          value={phone} 
+          onChange={(e) => setPhone(e.target.value)} 
+          className="mt-1 block w-full bg-gray-900 border-gray-700 rounded-md shadow-sm text-white" 
+          placeholder="0812..."
+          required
+        />
       </div>
-    </div>
+
+      {/* Alamat */}
+      <div>
+        <label htmlFor="address" className="block text-sm font-medium text-gray-400">
+          Alamat (Bandung)
+        </label>
+        <input 
+          type="text" 
+          id="address" 
+          value={address} 
+          onChange={(e) => setAddress(e.target.value)} 
+          className="mt-1 block w-full bg-gray-900 border-gray-700 rounded-md shadow-sm text-white" 
+          placeholder="Jl. Merdeka No. 10"
+          required
+        />
+      </div>
+
+      {/* Service Types (Pilihan ganda) */}
+      <div>
+        <label className="block text-sm font-medium text-gray-400">
+          Layanan yang Akan Ditawarkan
+        </label>
+        <div className="flex space-x-4 mt-2">
+          {ALL_SERVICES.map(service => (
+            <label key={service} className="flex items-center space-x-2 capitalize">
+              <input type="checkbox" checked={serviceTypes.includes(service)} onChange={() => handleServiceTypeChange(service)} className="rounded text-blue-600 bg-gray-700 border-gray-500" />
+              <span>{service}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+        
+      {/* Availability Days (Pilihan ganda) */}
+      <div>
+        <label className="block text-sm font-medium text-gray-400">
+          Hari Ketersediaan
+        </label>
+        <div className="flex flex-wrap gap-2 mt-2">
+          {ALL_DAYS.map(day => (
+            <label key={day} className="flex items-center space-x-2 p-2 bg-gray-700 rounded-md">
+              <input type="checkbox" checked={availability.includes(day)} onChange={() => handleDayChange(day)} className="rounded text-blue-600 bg-gray-700 border-gray-500" />
+              <span>{day}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+        
+      {/* Data Profesional */}
+      <hr className="my-6 border-gray-700" />
+
+      <div>
+        <label htmlFor="experience" className="block text-sm font-medium text-gray-400">
+          Tahun Pengalaman
+        </label>
+        <input 
+          type="number" 
+          id="experience" 
+          value={experience} 
+          onChange={(e) => setExperience(parseInt(e.target.value) || 0)} 
+          className="mt-1 block w-full bg-gray-900 border-gray-700 rounded-md shadow-sm text-white" 
+        />
+      </div>
+
+      <div>
+        <label htmlFor="certs" className="block text-sm font-medium text-gray-400">
+          Sertifikasi (Format JSON)
+        </label>
+        <textarea 
+          id="certs" 
+          rows={5} 
+          value={certs} 
+          onChange={(e) => setCerts(e.target.value)} 
+          className="mt-1 block w-full bg-gray-900 border-gray-700 rounded-md shadow-sm text-white font-mono"
+          placeholder={`[{"name": "Sertifikat A", "year": 2024}, ... ]`}
+        ></textarea>
+      </div>
+        
+      <button 
+        type="submit" 
+        disabled={loading} 
+        className="w-full px-4 py-2 bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-500"
+      >
+        {loading ? 'Mengirim...' : 'Daftar Sekarang'}
+      </button>
+    </form>
   );
 }
