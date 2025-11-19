@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./provider";            // keep if you need it
 import AuthProvider from "@/components/auth/AuthProvider";
+// import 'mapbox-gl/dist/mapbox-gl.css';
+// import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 export const metadata: Metadata = {
   title: "Homica",

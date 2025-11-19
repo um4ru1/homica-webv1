@@ -142,16 +142,16 @@ export default function SignInForm() {
   }
 
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-xl dark:bg-[#020d24] dark:text-white border border-gray-800 w-full max-w-md">
+    <div className="rounded-2xl bg-white p-5 shadow-xl dark:bg-[#020d24] dark:text-white border border-gray-50 w-full max-w-md">
       {/* Mode toggle */}
       <div className="mb-4 grid grid-cols-2 gap-2">
         <button
           type="button"
           onClick={() => setMode("user")}
-          className={`rounded-lg px-3 py-2 border text-sm font-medium transition-colors ${
+          className={`cursor-pointer rounded-lg px-3 py-2 border text-sm font-medium transition-colors ${
             mode === "user" 
             ? "bg-blue-600 text-white border-blue-600" 
-            : "bg-transparent text-gray-400 border-gray-700"
+            : "bg-transparent text-gray-600 border-gray-700"
           }`}
         >
           Masuk sebagai Pengguna
@@ -159,10 +159,10 @@ export default function SignInForm() {
         <button
           type="button"
           onClick={() => setMode("worker")}
-          className={`rounded-lg px-3 py-2 border text-sm font-medium transition-colors ${
+          className={`cursor-pointer rounded-lg px-3 py-2 border text-sm font-medium transition-colors ${
             mode === "worker" 
             ? "bg-blue-600 text-white border-blue-600" 
-            : "bg-transparent text-gray-400 border-gray-700"
+            : "bg-transparent text-gray-600 border-gray-700"
           }`}
         >
           Gabung Homica Family
@@ -174,10 +174,10 @@ export default function SignInForm() {
         <button
           type="button"
           onClick={() => setTab("signin")}
-          className={`flex-1 rounded-lg px-3 py-2 border text-sm font-medium transition-colors ${
+          className={`cursor-pointer flex-1 rounded-lg px-3 py-2 border text-sm font-medium transition-colors ${
             tab === "signin" 
             ? "bg-gray-800 text-white border-gray-600" 
-            : "bg-transparent text-gray-400 border-gray-700"
+            : "bg-transparent text-gray-500 border-gray-700" 
           }`}
         >
           Sign In
@@ -185,10 +185,10 @@ export default function SignInForm() {
         <button
           type="button"
           onClick={() => setTab("signup")}
-          className={`flex-1 rounded-lg px-3 py-2 border text-sm font-medium transition-colors ${
+          className={`cursor-pointer flex-1 rounded-lg px-3 py-2 border text-sm font-medium transition-colors ${
             tab === "signup" 
              ? "bg-gray-800 text-white border-gray-600" 
-            : "bg-transparent text-gray-400 border-gray-700"
+            : "bg-transparent text-gray-500 border-gray-700"
           }`}
         >
           Sign Up
@@ -218,7 +218,7 @@ export default function SignInForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email address"
-            className="w-full rounded-lg border p-3 bg-gray-900 border-gray-700 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+            className="w-full rounded-lg border p-3 bg-gray-50 border-gray-700 text-gray-950 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
             required
           />
           <input
@@ -226,12 +226,12 @@ export default function SignInForm() {
             value={pw}
             onChange={(e) => setPw(e.target.value)}
             placeholder="Password"
-            className="w-full rounded-lg border p-3 bg-gray-900 border-gray-700 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+            className="w-full rounded-lg border p-3 bg-gray-50 border-gray-700 text-gray-950 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
             required
           />
           <button
             disabled={busy}
-            className="w-full rounded-lg bg-blue-600 px-4 py-3 font-medium text-white hover:bg-blue-700 disabled:opacity-60 transition-colors"
+            className="w-full rounded-lg bg-blue-600 px-4 py-3 font-medium text-white hover:bg-blue-700 disabled:opacity-60 transition-colors cursor-pointer"
           >
             {busy ? "Processing…" : "Sign In"}
           </button>
@@ -243,7 +243,7 @@ export default function SignInForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email address"
-            className="w-full rounded-lg border p-3 bg-gray-900 border-gray-700 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+            className="w-full rounded-lg border p-3 bg-gray-50 border-gray-700 text-gray-950 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
             required
           />
           <input
@@ -251,7 +251,7 @@ export default function SignInForm() {
             value={pw}
             onChange={(e) => setPw(e.target.value)}
             placeholder="Password (min 6)"
-            className="w-full rounded-lg border p-3 bg-gray-900 border-gray-700 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+            className="w-full rounded-lg border p-3 bg-gray-50 border-gray-700 text-gray-950 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
             required
             minLength={6}
           />
@@ -260,7 +260,7 @@ export default function SignInForm() {
             value={pw2}
             onChange={(e) => setPw2(e.target.value)}
             placeholder="Confirm password"
-            className="w-full rounded-lg border p-3 bg-gray-900 border-gray-700 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+            className="w-full rounded-lg border p-3 bg-gray-50 border-gray-700 text-gray-950 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
             required
             minLength={6}
           />
@@ -275,7 +275,7 @@ export default function SignInForm() {
 
       <div className="my-6 flex items-center justify-center gap-3 text-sm opacity-70">
         <span className="h-px w-full bg-gray-700" />
-        <span className="text-gray-400">atau</span>
+        <span className="text-gray-700">atau</span>
         <span className="h-px w-full bg-gray-700" />
       </div>
 
@@ -283,13 +283,13 @@ export default function SignInForm() {
         type="button"
         onClick={signInWithGoogle}
         disabled={busy}
-        className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 font-medium text-white hover:bg-gray-800 disabled:opacity-60 transition-colors"
+        className="w-full rounded-lg border border-gray-700 bg-gray-50 px-4 py-3 font-medium text-gray-950 hover:bg-gray-100 disabled:opacity-60 transition-colors cursor-pointer"
       >
         Continue with Google
       </button>
 
       <div className="mt-6 text-center text-sm">
-        <a href="/" className="text-gray-400 hover:text-white underline">
+        <a href="/" className="text-gray-400 hover:text-gray-950 underline">
           Back to Home
         </a>
       </div>

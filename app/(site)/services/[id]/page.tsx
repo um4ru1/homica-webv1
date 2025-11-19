@@ -114,12 +114,12 @@ export default function ServiceDetail({
             </h1>
 
             {/* Selalu putih 90% */}
-            <p className="mt-4 text-lg max-w-2xl text-white/90">
+            <p className="mt-4 text-lg max-w-2xl text-white/90">  
               {svc.longdesc}
             </p>
 
             <div className="mt-8">
-              <Link href={`/pre-checkout?service=${id}`}>
+              <Link href={`/booking/${id}`}>
                 <Button className="bg-[#0A74DA] text-white hover:bg-[#0A74DA]/90 px-6">
                   Coba Sekarang
                 </Button>
