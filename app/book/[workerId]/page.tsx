@@ -2,11 +2,19 @@ import { createSupabaseServer } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import BookingClient from './booking-client';
 
-export default async function BookingPage({ params }: { params: { workerId: string } }) {
+// 1. Definisikan tipe Props dengan benar (Promise)
+interface PageProps {
+  params: Promise<{ workerId: string }>;
+}
+
+// 2. Gunakan tipe tersebut di sini
+export default async function BookingPage({ params }: PageProps) {
   const supabase = createSupabaseServer();
-  // Await params di Next.js 15 (jika pakai versi terbaru)
+
+  // 3. Await params sebelum properti diakses
   const { workerId } = await params; 
 
+  // Cek User
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return redirect(`/signin?next=/book/${workerId}`);
 
