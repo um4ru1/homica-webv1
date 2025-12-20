@@ -5,6 +5,8 @@ import { motion } from 'motion/react';
 import { ArrowRight, Star, Users, Shield, BadgeDollarSign } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { useOnceAnimation } from '@/hooks/useAnimationOnce';
+import Link from 'next/link';
+
 
 export function Hero() {
   // Hooks dengan WAJIB unique storage key
@@ -57,9 +59,9 @@ export function Hero() {
                 className="font-['Poppins'] text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 dark:text-customtext"
               >
                 Trusted Care &{' '}
-                <span className="text-[#0A74DA]">Cleaning</span>{' '}
+                <span className="text-customblue">Cleaning</span>{' '}
                 Services at Your{' '}
-                <span className="text-[#00BFA6]">Fingertips</span>
+                <span className="text-customgreen">Fingertips</span>
               </motion.h1>
 
               <motion.p
@@ -88,7 +90,8 @@ export function Hero() {
                 size="lg"
                 className="px-8 py-6 text-lg bg-[#0A74DA] hover:bg-[#0A74DA]/80 text-custombutton group"
               >
-                <a href="/services#servicesall">
+              {/* pakai ini jika diarahkan ke page overview 3 produk /services#servicesall */}
+                <a href="/discover">
                   Pesan Layanan Sekarang
                   <ArrowRight className="ml-2 inline-block h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
                 </a>

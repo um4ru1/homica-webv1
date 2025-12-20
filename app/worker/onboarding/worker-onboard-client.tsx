@@ -38,6 +38,7 @@ export default function WorkerOnboardingClient({ userEmail, userId, initialData 
     bio: initialData?.bio || '',
     address: initialData?.address || '', // Ini yang wajib diisi via peta
     notes: initialData?.notes || '',
+    age: initialData?.age || '',
     latitude: initialData?.latitude || null,
     longitude: initialData?.longitude || null,
     zone: initialData?.areas?.[0] || null, 
@@ -139,6 +140,7 @@ export default function WorkerOnboardingClient({ userEmail, userId, initialData 
     if (
         !formData.bio || 
         !formData.phone || 
+        !formData.age ||
         isAddressEmpty || // Validasi Alamat Wajib
         isServicesEmpty || 
         isAvailabilityEmpty 
@@ -181,6 +183,7 @@ export default function WorkerOnboardingClient({ userEmail, userId, initialData 
         const payload = {
             user_id: userId,
             phone: cleanPhone,
+            age: Number(formData.age),
             bio: formData.bio,
             address: formData.address,
             notes: formData.notes,
@@ -271,7 +274,30 @@ export default function WorkerOnboardingClient({ userEmail, userId, initialData 
                         </p>
                     )}
                 </div>
-
+                {/* INPUT UMUR (HANYA ANGKA) */}
+                <div>
+                    <label htmlFor="age" className="block text-sm font-medium mb-1">
+                        Umur <span className="text-red-500">*</span>
+                    </label>
+                    <input 
+                        type="number" 
+                        id="age" 
+                        value={formData.age} 
+                        onChange={(e) => setFormData({ ...formData, age: e.target.value })} 
+                        min="17" // Validasi minimal umur (opsional)
+                        max="99" 
+                        className={`w-full p-3 rounded-lg border bg-transparent focus:outline-none transition-colors
+                            ${(showValidation && !formData.age) 
+                                ? 'border-red-500 bg-red-50 dark:bg-red-900/10 text-red-900 dark:text-red-100' 
+                                : 'border-gray-300 dark:border-gray-700 focus:border-blue-500'}`}
+                        placeholder="Contoh: 25" 
+                    />
+                    {showValidation && !formData.age && (
+                        <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                            <Info className="w-3 h-3" /> Umur wajib diisi
+                        </p>
+                    )}
+                </div>
                 <div>
                     <label htmlFor="bio" className="block text-sm font-medium mb-1">Deskripsi Singkat <span className="text-red-500">*</span></label>
                     <textarea id="bio" rows={4} value={formData.bio} onChange={e => setFormData({...formData, bio: e.target.value})} 

@@ -2,7 +2,15 @@
 
 @theme {
   --color-custom-button-text: oklch(100% 0.00011 271.152); 
+
+  --color-green-custom: oklch(80.036% 0.18204 151.736);
+  --color-greencustombutton: oklch(65% 0.2 178.888);
+  --color-greencustombuttonhover: oklch(50% 0.2 178.888);
+  --color-bluecustombutton: oklch(60% 0.2 254.402);
+  --color-bluecustombuttonhover: oklch(50% 0.2 254.402);
+
 }
+
 
 @layer utilities {
   .dark .dark\:text-blue-400 {
@@ -22,8 +30,19 @@
   }
 }
 
-/* Dark theme overrides */
+:root {
+  /* untuk h jangan diganti krn warna dasar */
+  /* green l = 0.13175, blue l = 0.18 */
+  --green-custom: oklch(65% 0.2 178.888); 
+  --blue-custom: oklch(60% 0.2 254.402);
+  --green-custom: #00b391; 
+  --blue-custom: #007ef3;
+}
+
+/* Dark theme     overrides */  
 .dark {
+  --green-custom: oklch(80% 0.2 178.888); 
+  --blue-custom: oklch(75% 0.2 254.402);  
   --background: oklch(12.442% 0.04154 255.394);
   --foreground: oklch(92.997% 0.0105 261.889);
   --background-secondary: oklch(21.834% 0.09066 260.333);
@@ -32,6 +51,8 @@
 
 /* Map CSS variables to Tailwind utilities */
 @theme inline {
+  --color-customgreen: var(--green-custom);
+  --color-customblue: var(--blue-custom);
   --color-custombg: var(--background);
   --color-customtext: var(--foreground);
   --color-customtext2: var(--foreground-secondary);
